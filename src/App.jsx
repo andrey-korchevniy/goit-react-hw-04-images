@@ -28,7 +28,7 @@ export class App extends Component {
   
   // getting data from API
   getPicList = async () => {
-    const { query, page, total } = this.state;
+    const { query, page } = this.state;
     try {
       await getPictures(query, page, this.handleSearchResult)
     } catch (error) {
