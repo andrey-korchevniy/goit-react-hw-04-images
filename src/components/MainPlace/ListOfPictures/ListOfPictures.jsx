@@ -31,7 +31,7 @@ export class ListOfPictures extends Component {
 
     render() {
         const { data } = this.props;
-        const { total, photos, isLoaded } = data;
+        const { total, photos } = data;
         const { url, isModalOpen } = this.state;
         let message = 'Type any word to find pictures';
         let picture = typeword;
