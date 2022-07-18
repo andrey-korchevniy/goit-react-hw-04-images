@@ -1,70 +1,64 @@
 import nothing from 'images/nothing.png';
 import typeword from 'images/search.png';
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import { FindBlock, FindText, Img, Li, Ul, Margin } from './ListOfPictures.styled';
-import ModalLargePic from './ModalLargePic/ModalLargePic';
+import {ModalLargePic} from './ModalLargePic/ModalLargePic';
 import PropTypes from 'prop-types';
 
-export class ListOfPictures extends Component {
+export const ListOfPictures = ({ data }) => {
+    const [url, setUrl] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    state = {
-        url: '',
-        isModalOpen: false,
-    }
 // open modal window
-    openModal = (e) => {
-        this.setState({isModalOpen: true, url: e.target.id})
+    const openModal = (e) => {
+        setIsModalOpen(true);
+        setUrl(e.target.id);
     }
+
 // close modal window
-    closeModal = () => {
-        this.setState({isModalOpen: false})
+    const closeModal = () => {
+        setIsModalOpen(false)
     }
+
 // set scroll to end of the page
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data.photos.length !== this.props.data.photos.length) {
-            window.scrollTo({
-                top: document.documentElement.scrollHeight,
-                behavior: 'smooth',
-         });
+    useEffect(() => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+        })
+    }, [data.photos])
+    
+    const { total, photos } = data;
+    let message = 'Type any word to find pictures';
+    let picture = typeword;
+
+    if (total === 0) { message = 'Nothing has been found'; picture = nothing };
+    if (total === -1) { message = 'Somesing wrong is happening with server'; picture = nothing };
+
+    if (total > 0) {
+        return (
+            <Ul>
+                {photos.map(pic =>
+                    <Li key={pic.id} onClick={openModal}>
+                        <Img src={pic.previewURL} alt={pic.tags} id={pic.largeImageURL}></Img>
+                    </Li>
+                )}
+                {isModalOpen && <ModalLargePic url={url} onClose={closeModal} />}
+                <Margin></Margin>
+            </Ul>
+        )
+    } else {
+        return (
+            <FindBlock>
+                <FindText>
+                    {message}
+                </FindText>
+                <img src={picture} alt='nothing is found'></img>
+            </FindBlock>
+                )
         }
     }
-
-    render() {
-        const { data } = this.props;
-        const { total, photos } = data;
-        const { url, isModalOpen } = this.state;
-        let message = 'Type any word to find pictures';
-        let picture = typeword;
-
-        if (total === 0) { message = 'Nothing has been found'; picture = nothing };
-        if (total === -1) { message = 'Somesing wrong is happening with server'; picture = nothing };
-
-        if (total > 0) {
-            return (
-                <Ul>
-                    {photos.map(pic =>
-                        <Li key={pic.id} onClick={this.openModal}>
-                            <Img src={pic.previewURL} alt={pic.tags} id={pic.largeImageURL}></Img>
-                        </Li>
-                    )}
-                    {isModalOpen && <ModalLargePic url={url} onClose={this.closeModal} />}
-                    <Margin></Margin>
-                </Ul>
-            )
-        } else {
-            return (
-                <FindBlock>
-                    <FindText>
-                        {message}
-                    </FindText>
-                    <img src={picture} alt='nothing is found'></img>
-                </FindBlock>
-                    )
-            }
-        }
-      
-}
-
+    
 ListOfPictures.propTypes = {
     data: PropTypes.object.isRequired,
 }

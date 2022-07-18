@@ -1,36 +1,33 @@
 import { Backdrop, PictureContainer, LargePic } from './ModalLargePic.styled';
-import { Component } from "react";
+import { useEffect } from "react";
 import PropTypes from 'prop-types';
 
-export default class ModalLargePic extends Component {
+export const ModalLargePic = ({ url, onClose }) => {
 
-    // create listenet on ESC
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleKeyDown)
-    };
+    // create listener on ESC
+    useEffect(() => (window.addEventListener('keydown', handleKeyDown)), [])
 
     // stop listener on ESC
-    componentWillUnmount() {
-       window.removeEventListener('keydown', this.handleKeyDown);
-    }
+    useEffect(() => {
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+    })
 
     // close modal by ESC press
-    handleKeyDown = e => {
-            if (e.key === 'Escape') {
-                this.props.onClose()
-            }
+    const handleKeyDown = e => {
+        if (e.key === 'Escape') {
+            onClose()
         }
-
-    render() {
-        const { url, onClose } = this.props;
-        return (
-            <Backdrop onClick={onClose}>
-                <PictureContainer>
-                    <LargePic src={url} alt='result of search' />
-                </PictureContainer>
-            </Backdrop>
-        )
     }
+
+    return (
+        <Backdrop onClick={onClose}>
+            <PictureContainer>
+                <LargePic src={url} alt='result of search' />
+            </PictureContainer>
+        </Backdrop>
+    )
 }
 
 ModalLargePic.propTypes = {

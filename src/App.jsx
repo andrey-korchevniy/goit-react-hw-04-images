@@ -1,61 +1,63 @@
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import { Searchbar } from 'components/Searchbar/Searchbar';
-import MainPlace from "components/MainPlace/MainPlace";
+import { MainPlace } from "components/MainPlace/MainPlace";
 import { getPictures } from 'api/pixabay-api';
 
-export class App extends Component {
-  state = {
-    photos: [],             // array for render
-    total: null,            // total amount of pictures in search result
-    page: 1,                // number of a current page
-    query: '',              // a search word or frase
-    isLoaded: false,        // spinner status
-  }
-  
+export const App = () => {
+  const [photos, setPhotos] = useState([]);         // array for render
+  const [total, setTotal] = useState(null);         // total amount of pictures in search result
+  const [page, setPage] = useState(1);              // number of a current page
+  const [query, setQuery] = useState('');           // a search word or frase
+  const [isLoaded, setIsLoaded] = useState(false);  // spinner status
+
+  const dataSet = { photos, total, page, query, isLoaded };
+
   // processing search-btn click
-  onSearch = async (data) => {
-    if (data.query !== this.state.query) {
-      await this.setState({ query: data.query, page: 1, photos: [], total: null, isLoaded: true });
-      this.getPicList();
+  const onSearch = (data) => {
+    if (data.query !== query) {
+      setQuery(() =>  data.query );
+      setPage(1);
+      setPhotos([]);
+      setTotal(null);
+      setIsLoaded(true);
     }
   }
 
   // processing loadMore-btn click
-  onLoadMoreClick = async () => {
-    await this.setState(prevState => ({ page: (prevState.page + 1), isLoaded: true }));
-    this.getPicList();
+  const onLoadMoreClick = () => {
+    setPage(prev => prev + 1);
+    setIsLoaded(true);
   }
   
-  // getting data from API
-  getPicList = async () => {
-    const { query, page } = this.state;
-    try {
-      await getPictures(query, page, this.handleSearchResult)
-    } catch (error) {
-      await this.setState({total: -1})
-      this.handleSearchResult();
-    }
-  }
-
   // processing an income result of the search
-  handleSearchResult = async (data) => {
-
+  const handleSearchResult = (data) => {
     if (data !== undefined) {
-      const newData = this.state.photos.concat(data.data.hits);
-      await this.setState({ photos: newData, total: data.data.totalHits, isLoaded: false });
+      setPhotos(photos.concat(data.data.hits));
+      setTotal(data.data.totalHits);
+      setIsLoaded(false);
     } else {
-      await this.setState({ photos: [], isLoaded: false });
+      setPhotos([]);
+      setIsLoaded(false);
     };
-
   }
 
-  render() {
-    return (
-      <div>
-        <Searchbar onSearch={this.onSearch} />
-        <MainPlace data={this.state} onLoadMoreClick={this.onLoadMoreClick} />
-      </div>
-    );
-  };
+  // get API 
+  useEffect(() => {
+    if (query !== '') {
+      try {
+        getPictures(query, page, handleSearchResult);
+      } catch (error) {
+        setTotal(-1);
+        handleSearchResult();
+      }
+    }
+  }, [query, page]);
+
+  return (
+    <div>
+      <Searchbar onSearch={onSearch} />
+      <MainPlace data={dataSet} onLoadMoreClick={onLoadMoreClick} />
+    </div>
+  );
 }
 
