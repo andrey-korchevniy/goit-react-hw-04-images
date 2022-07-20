@@ -29,27 +29,21 @@ export const App = () => {
     setIsLoaded(true);
   }
   
-  // processing an income result of the search
-  const handleSearchResult = (data) => {
-    if (data !== undefined) {
-      setPhotos(photos.concat(data.data.hits));
-      setTotal(data.data.totalHits);
-      setIsLoaded(false);
-    } else {
-      setPhotos([]);
-      setIsLoaded(false);
-    };
-  }
-
   // get API 
   useEffect(() => {
     if (query !== '') {
-      try {
-        getPictures(query, page, handleSearchResult);
-      } catch (error) {
-        setTotal(-1);
-        handleSearchResult();
-      }
+      getPictures(query, page)
+        .then(data => {
+          if (data !== undefined) {
+            setPhotos(photos => photos.concat(data.hits));
+            setTotal(data.totalHits);
+            setIsLoaded(false);
+          } else {
+            setPhotos([]);
+            setIsLoaded(false);
+          };
+        })
+        .catch(setTotal(-1))
     }
   }, [query, page]);
 

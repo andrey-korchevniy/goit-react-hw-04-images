@@ -1,9 +1,16 @@
-import { Backdrop, PictureContainer, LargePic } from './ModalLargePic.styled';
+import { Backdrop, PictureContainer, LargePic } from './Modal';
 import { useEffect } from "react";
 import PropTypes from 'prop-types';
 
-export const ModalLargePic = ({ url, onClose }) => {
+export const Modal = ({ url, onClose }) => {
 
+    // close modal by ESC press
+    const handleKeyDown = e => {
+        if (e.key === 'Escape') {
+            onClose()
+        }
+    }
+    
     // create listener on ESC
     useEffect(() => (window.addEventListener('keydown', handleKeyDown)), [])
 
@@ -14,12 +21,7 @@ export const ModalLargePic = ({ url, onClose }) => {
         }
     })
 
-    // close modal by ESC press
-    const handleKeyDown = e => {
-        if (e.key === 'Escape') {
-            onClose()
-        }
-    }
+
 
     return (
         <Backdrop onClick={onClose}>
@@ -30,7 +32,7 @@ export const ModalLargePic = ({ url, onClose }) => {
     )
 }
 
-ModalLargePic.propTypes = {
+Modal.propTypes = {
     url: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
 }

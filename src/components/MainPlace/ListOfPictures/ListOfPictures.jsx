@@ -2,7 +2,7 @@ import nothing from 'images/nothing.png';
 import typeword from 'images/search.png';
 import { useState, useEffect } from "react";
 import { FindBlock, FindText, Img, Li, Ul, Margin } from './ListOfPictures.styled';
-import {ModalLargePic} from './ModalLargePic/ModalLargePic';
+import { Modal } from '../Modal/Modal.jsx';
 import PropTypes from 'prop-types';
 
 export const ListOfPictures = ({ data }) => {
@@ -43,7 +43,7 @@ export const ListOfPictures = ({ data }) => {
                         <Img src={pic.previewURL} alt={pic.tags} id={pic.largeImageURL}></Img>
                     </Li>
                 )}
-                {isModalOpen && <ModalLargePic url={url} onClose={closeModal} />}
+                {isModalOpen && <Modal url={url} onClose={closeModal} />}
                 <Margin></Margin>
             </Ul>
         )
