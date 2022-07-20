@@ -11,12 +11,12 @@ export const Modal = ({ url, onClose }) => {
         }
     }
     
-    // create listener on ESC
+    // create listener on-ESC
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
     })
 
-    // stop listener on ESC
+    // stop listener on-ESC
     useEffect(() => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
