@@ -12,7 +12,9 @@ export const Modal = ({ url, onClose }) => {
     }
     
     // create listener on ESC
-    useEffect(() => (window.addEventListener('keydown', handleKeyDown)), [])
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+    })
 
     // stop listener on ESC
     useEffect(() => {
@@ -20,8 +22,6 @@ export const Modal = ({ url, onClose }) => {
             window.removeEventListener('keydown', handleKeyDown);
         }
     })
-
-
 
     return (
         <Backdrop onClick={onClose}>
