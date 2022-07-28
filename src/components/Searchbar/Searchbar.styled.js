@@ -104,7 +104,8 @@ export const FormikWrapper = styled.div`
     width: 100%;
     display: block;
     height: 60px;
-    background: #373737 url(${bg}) 0 0 repeat;  text-align: center;
+    background: #373737 url(${bg}) 0 0 repeat;
+    text-align: center;
     padding-top: 10px;
 `
 export const Error = styled(ErrorMessage)`
